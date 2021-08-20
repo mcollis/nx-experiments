@@ -1,20 +1,41 @@
 import {
-  addProjectConfiguration,
+  Tree,
+  addDependenciesToPackageJson,
   formatFiles,
   generateFiles,
   getWorkspaceLayout,
   names,
   offsetFromRoot,
-  Tree,
+  readProjectConfiguration,
+  updateProjectConfiguration,
 } from '@nrwl/devkit';
-import * as path from 'path';
+import { join } from 'path';
+import { normalizeOptions as reactNormalizeOptions } from '@nrwl/react/src/generators/application/lib/normalize-options';
+import reactApplicationGenerator from '@nrwl/react/src/generators/application/application';
+import { runTasksInSerial } from '@nrwl/workspace/src/utilities/run-tasks-in-serial';
+
 import { MyPluginGeneratorSchema } from './schema';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 interface NormalizedSchema extends MyPluginGeneratorSchema {
+  appName: string;
   projectName: string;
   projectRoot: string;
   projectDirectory: string;
   parsedTags: string[];
+}
+
+function updateDependencies(host: Tree) {
+  return addDependenciesToPackageJson(
+    host,
+    {
+      'single-spa-react': 'latest',
+    },
+    {
+      'systemjs-webpack-interop': 'latest',
+    }
+  );
 }
 
 function normalizeOptions(
@@ -26,13 +47,15 @@ function normalizeOptions(
     ? `${names(options.directory).fileName}/${name}`
     : name;
   const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
-  const projectRoot = `${getWorkspaceLayout(tree).libsDir}/${projectDirectory}`;
+  const projectRoot = `${getWorkspaceLayout(tree).appsDir}/${projectDirectory}`;
   const parsedTags = options.tags
     ? options.tags.split(',').map((s) => s.trim())
     : [];
+  const appName = options.pascalCaseFiles ? 'App' : 'app';
 
   return {
     ...options,
+    appName,
     projectName,
     projectRoot,
     projectDirectory,
@@ -40,34 +63,52 @@ function normalizeOptions(
   };
 }
 
-function addFiles(tree: Tree, options: NormalizedSchema) {
-  const templateOptions = {
+function createApplicationFiles(tree: Tree, options: NormalizedSchema) {
+  const templateVariables = {
     ...options,
     ...names(options.name),
     offsetFromRoot: offsetFromRoot(options.projectRoot),
-    template: '',
+    tmpl: '',
   };
+
+  console.log(templateVariables);
+
   generateFiles(
     tree,
-    path.join(__dirname, 'files'),
+    join(__dirname, './files'),
     options.projectRoot,
-    templateOptions
+    templateVariables
   );
 }
 
 export default async function (tree: Tree, options: MyPluginGeneratorSchema) {
+  const reactApplicationTask = await reactApplicationGenerator(
+    tree,
+    reactNormalizeOptions(tree, options)
+  );
+
   const normalizedOptions = normalizeOptions(tree, options);
-  addProjectConfiguration(tree, normalizedOptions.projectName, {
-    root: normalizedOptions.projectRoot,
-    projectType: 'library',
-    sourceRoot: `${normalizedOptions.projectRoot}/src`,
-    targets: {
-      build: {
-        executor: '@my-plugin/my-plugin:build',
-      },
-    },
-    tags: normalizedOptions.parsedTags,
-  });
-  addFiles(tree, normalizedOptions);
+
+  const installTask = updateDependencies(tree);
+  createApplicationFiles(tree, normalizedOptions);
+
   await formatFiles(tree);
+
+  const projConfig = readProjectConfiguration(
+    tree,
+    normalizedOptions.projectName
+  );
+  projConfig.targets.build.options.webpackConfig =
+    '@my-plugin/my-plugin/plugins/webpack';
+  projConfig.targets.build.options.orgName = options.orgName;
+  projConfig.targets.build.options.projectName = normalizedOptions.projectName;
+
+  projConfig.targets.serve.options.webpackConfig =
+    '@my-plugin/my-plugin/plugins/webpack';
+  projConfig.targets.serve.options.orgName = options.orgName;
+  projConfig.targets.serve.options.projectName = normalizedOptions.projectName;
+
+  updateProjectConfiguration(tree, normalizedOptions.projectName, projConfig);
+
+  return runTasksInSerial(reactApplicationTask, installTask);
 }

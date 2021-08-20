@@ -1,7 +1,7 @@
 {
   "npmScope": "my-plugin",
   "affected": {
-    "defaultBase": "master"
+    "defaultBase": "main"
   },
   "implicitDependencies": {
     "package.json": {
