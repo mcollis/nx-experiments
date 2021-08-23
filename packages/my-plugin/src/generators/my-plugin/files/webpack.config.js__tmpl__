@@ -1,0 +1,38 @@
+const { join } = require('path');
+const getWebpackConfig = require('@nrwl/react/plugins/webpack');
+const { merge } = require('webpack-merge');
+const singleSpaDefaults = require('webpack-config-single-spa-react');
+const SystemJSPublicPathPlugin = require("systemjs-webpack-interop/SystemJSPublicPathWebpackPlugin");
+
+module.exports = (config) => {
+  const reactDefaultConfig = getWebpackConfig(config);
+
+  const singleSpaDefaultConfig = singleSpaDefaults({
+    orgName: '<%= orgName %>',
+    projectName: '<%= projectName %>'
+  });
+
+  console.log(JSON.stringify(singleSpaDefaultConfig, null, 2));
+
+  const output = merge(reactDefaultConfig, {
+    entry: join(__dirname, 'src/<%= orgName %>-<%= projectName %>'),
+    output: {
+      filename: '<%= orgName %>-<%= projectName %>.js',
+      libraryTarget: "system",
+    },
+    plugins: [
+      new SystemJSPublicPathPlugin({
+        systemjsModuleName: '@<%= orgName %>/<%= projectName %>'
+        // rootDirectoryLevel: opts.rootDirectoryLevel
+      }),
+    ],
+    externals: [
+      "single-spa",
+      "react",
+      "react-dom"
+    ]
+  })
+
+  return output;
+};
+

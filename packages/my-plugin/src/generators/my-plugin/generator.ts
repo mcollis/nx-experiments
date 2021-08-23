@@ -4,6 +4,7 @@ import {
   formatFiles,
   generateFiles,
   getWorkspaceLayout,
+  joinPathFragments,
   names,
   offsetFromRoot,
   readProjectConfiguration,
@@ -34,6 +35,8 @@ function updateDependencies(host: Tree) {
     },
     {
       'systemjs-webpack-interop': 'latest',
+      'webpack-merge': 'latest',
+      'webpack-config-single-spa-react': 'latest',
     }
   );
 }
@@ -82,11 +85,6 @@ function createApplicationFiles(tree: Tree, options: NormalizedSchema) {
 }
 
 export default async function (tree: Tree, options: MyPluginGeneratorSchema) {
-  const reactApplicationTask = await reactApplicationGenerator(
-    tree,
-    reactNormalizeOptions(tree, options)
-  );
-
   const normalizedOptions = normalizeOptions(tree, options);
 
   const installTask = updateDependencies(tree);
@@ -94,21 +92,30 @@ export default async function (tree: Tree, options: MyPluginGeneratorSchema) {
 
   await formatFiles(tree);
 
+  const reactApplicationTask = await reactApplicationGenerator(
+    tree,
+    reactNormalizeOptions(tree, options)
+  );
+
   const projConfig = readProjectConfiguration(
     tree,
     normalizedOptions.projectName
   );
-  projConfig.targets.build.options.webpackConfig =
-    '@my-plugin/my-plugin/plugins/webpack';
+  projConfig.targets.build.options.webpackConfig = joinPathFragments(
+    normalizedOptions.projectRoot,
+    'webpack.config.js'
+  );
   projConfig.targets.build.options.orgName = options.orgName;
   projConfig.targets.build.options.projectName = normalizedOptions.projectName;
 
-  projConfig.targets.serve.options.webpackConfig =
-    '@my-plugin/my-plugin/plugins/webpack';
+  projConfig.targets.serve.options.webpackConfig = joinPathFragments(
+    normalizedOptions.projectRoot,
+    'webpack.config.js'
+  );
   projConfig.targets.serve.options.orgName = options.orgName;
   projConfig.targets.serve.options.projectName = normalizedOptions.projectName;
 
   updateProjectConfiguration(tree, normalizedOptions.projectName, projConfig);
 
-  return runTasksInSerial(reactApplicationTask, installTask);
+  return runTasksInSerial(installTask, reactApplicationTask);
 }
