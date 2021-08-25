@@ -30,7 +30,7 @@ export default async function runExecutor(
       path: `${defaultConfig.output.path}/${context.projectName}`,
     },
   });
-  console.log(JSON.stringify(config, null, 2));
+  // console.log(JSON.stringify(config, null, 2));
   return runWebpack(config).then(() => ({ success: true }));
   return Promise.resolve({ success: true });
 }

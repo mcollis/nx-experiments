@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Build executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "string",
+      "description": "Project Name"
+    },
+    "organization": {
+      "type": "string",
+      "description": "Organization Name"
+    },
+    "webpackConfig": {
+      "type": "string",
+      "description": "Path to a function which takes a webpack config, some context and returns the resulting webpack config"
+    },
+    "filename": {
+      "type": "string",
+      "description": "Path to entry point of application"
+    },
+    "root": {
+      "type": "string",
+      "description": "Path to a project root",
+      "hidden": true
+    }
+  },
+  "required": ["project", "organization"]
+}

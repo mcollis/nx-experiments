@@ -74,7 +74,7 @@ function createApplicationFiles(tree: Tree, options: NormalizedSchema) {
     tmpl: '',
   };
 
-  console.log(templateVariables);
+  // console.log(templateVariables);
 
   generateFiles(
     tree,
@@ -105,15 +105,12 @@ export default async function (tree: Tree, options: MyPluginGeneratorSchema) {
     normalizedOptions.projectRoot,
     'webpack.config.js'
   );
+  projConfig.targets.build.options.main = joinPathFragments(
+    normalizedOptions.projectDirectory,
+    `src/${options.orgName}-${normalizedOptions.projectName}.tsx`
+  );
   projConfig.targets.build.options.orgName = options.orgName;
   projConfig.targets.build.options.projectName = normalizedOptions.projectName;
-
-  projConfig.targets.serve.options.webpackConfig = joinPathFragments(
-    normalizedOptions.projectRoot,
-    'webpack.config.js'
-  );
-  projConfig.targets.serve.options.orgName = options.orgName;
-  projConfig.targets.serve.options.projectName = normalizedOptions.projectName;
 
   updateProjectConfiguration(tree, normalizedOptions.projectName, projConfig);
 

@@ -27,9 +27,11 @@
   },
   "private": true,
   "dependencies": {
+    "ramda": "^0.27.1",
     "tslib": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-pipeline-operator": "^7.15.0",
     "@nrwl/cli": "^12.7.2",
     "@nrwl/devkit": "12.7.2",
     "@nrwl/eslint-plugin-nx": "12.7.2",

@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@my-plugin/single-spa": ["packages/single-spa/src/index.ts"],
       "my-plugin/my-plugin": ["packages/my-plugin/src/index.ts"]
     }
   },

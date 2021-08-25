@@ -33,6 +33,13 @@
     "my-plugin-e2e": {
       "tags": [],
       "implicitDependencies": ["my-plugin"]
+    },
+    "single-spa": {
+      "tags": []
+    },
+    "single-spa-e2e": {
+      "tags": [],
+      "implicitDependencies": ["single-spa"]
     }
   },
   "workspaceLayout": {

@@ -68,6 +68,74 @@
           }
         }
       }
+    },
+    "single-spa": {
+      "root": "packages/single-spa",
+      "sourceRoot": "packages/single-spa/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/single-spa/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/single-spa"],
+          "options": {
+            "jestConfig": "packages/single-spa/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/single-spa",
+            "tsConfig": "packages/single-spa/tsconfig.lib.json",
+            "packageJson": "packages/single-spa/package.json",
+            "main": "packages/single-spa/src/index.ts",
+            "assets": [
+              "packages/single-spa/*.md",
+              {
+                "input": "./packages/single-spa/src",
+                "glob": "**/!(*.ts)",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/single-spa/src",
+                "glob": "**/*.d.ts",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/single-spa",
+                "glob": "generators.json",
+                "output": "."
+              },
+              {
+                "input": "./packages/single-spa",
+                "glob": "executors.json",
+                "output": "."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "single-spa-e2e": {
+      "root": "e2e/single-spa-e2e",
+      "projectType": "application",
+      "sourceRoot": "e2e/single-spa-e2e/src",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/nx-plugin:e2e",
+          "options": {
+            "target": "single-spa:build",
+            "jestConfig": "e2e/single-spa-e2e/jest.config.js"
+          }
+        }
+      }
     }
   },
   "cli": {

@@ -16,7 +16,7 @@ const setWebpackConfig = (
     })
   );
   reactConfig.output.libraryTarget = 'system';
-  console.log(reactConfig);
+  // console.log(reactConfig);
   return reactConfig;
 };
 
