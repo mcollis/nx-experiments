@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@mcollis/nx-single-spa": ["packages/nx-single-spa/src/index.ts"]
+      "@mcollis/nx-single-spa": ["packages/nx-single-spa/src/index.ts"],
+      "@mcollis/url-search-params": ["packages/url-search-params/src/index.js"]
     }
   },
   "exclude": ["node_modules", "tmp"]

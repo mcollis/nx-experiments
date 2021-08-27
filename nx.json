@@ -33,6 +33,9 @@
     "nx-single-spa-e2e": {
       "tags": [],
       "implicitDependencies": ["nx-single-spa"]
+    },
+    "url-search-params": {
+      "tags": []
     }
   },
   "workspaceLayout": {

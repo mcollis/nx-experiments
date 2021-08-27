@@ -68,6 +68,38 @@
           }
         }
       }
+    },
+    "url-search-params": {
+      "root": "packages/url-search-params",
+      "sourceRoot": "packages/url-search-params/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/url-search-params",
+            "tsConfig": "packages/url-search-params/tsconfig.lib.json",
+            "packageJson": "packages/url-search-params/package.json",
+            "main": "packages/url-search-params/src/index.js",
+            "assets": ["packages/url-search-params/*.md"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/url-search-params/**/*.js"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/url-search-params"],
+          "options": {
+            "jestConfig": "packages/url-search-params/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

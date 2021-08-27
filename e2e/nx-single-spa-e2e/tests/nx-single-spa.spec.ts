@@ -14,7 +14,7 @@ describe('nx-single-spa e2e', () => {
     await runNxCommandAsync(`generate @nrwl/react:application ${plugin}`);
   }, 300000);
 
-  it('should create nx-single-spa', async () => {
+  fit('should create nx-single-spa', async () => {
     await runNxCommandAsync(
       `generate @mcollis/nx-single-spa:application --project=${plugin}`
     );
@@ -23,7 +23,7 @@ describe('nx-single-spa e2e', () => {
     expect(true).toBeTruthy();
     // expect(result.stdout).toContain('Executor ran');
   }, 300000);
-  xit('should build nx-single-spa', async () => {
+  it('should build nx-single-spa', async () => {
     await runNxCommandAsync('generate @nrwl/web:webpack5');
     await runNxCommandAsync(
       `generate @mcollis/nx-single-spa:application --project=${plugin}`
@@ -32,7 +32,7 @@ describe('nx-single-spa e2e', () => {
     expect(result.stdout).toContain('Running target "build" succeeded');
   }, 300000);
 
-  xdescribe('--directory', () => {
+  describe('--directory', () => {
     it('should create src in the specified directory', async () => {
       const plugin = uniq('nx-single-spa');
       ensureNxProject('@mcollis/nx-single-spa', 'dist/packages/nx-single-spa');
@@ -45,7 +45,7 @@ describe('nx-single-spa e2e', () => {
     }, 120000);
   });
 
-  xdescribe('--tags', () => {
+  describe('--tags', () => {
     it('should add tags to nx.json', async () => {
       const plugin = uniq('nx-single-spa');
       ensureNxProject('@mcollis/nx-single-spa', 'dist/packages/nx-single-spa');

@@ -7,7 +7,6 @@ const options: BuildExecutorSchema = {
   outputPath: 'dist/apps/my-project',
   filename: 'mocks/my-org-my-project',
   webpackConfig: 'mocks/webpack.config.js',
-  // root: 'packages/nx-single-spa/src/executors/build',
 };
 
 const context = {
