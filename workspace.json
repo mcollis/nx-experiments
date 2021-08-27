@@ -1,90 +1,22 @@
 {
   "version": 2,
   "projects": {
-    "my-plugin": {
-      "root": "packages/my-plugin",
-      "sourceRoot": "packages/my-plugin/src",
-      "projectType": "application",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["packages/my-plugin/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/packages/my-plugin"],
-          "options": {
-            "jestConfig": "packages/my-plugin/jest.config.js",
-            "passWithNoTests": true
-          }
-        },
-        "build": {
-          "executor": "@nrwl/node:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/packages/my-plugin",
-            "tsConfig": "packages/my-plugin/tsconfig.lib.json",
-            "packageJson": "packages/my-plugin/package.json",
-            "main": "packages/my-plugin/src/index.ts",
-            "assets": [
-              "packages/my-plugin/*.md",
-              {
-                "input": "./packages/my-plugin/src",
-                "glob": "**/!(*.ts)",
-                "output": "./src"
-              },
-              {
-                "input": "./packages/my-plugin/src",
-                "glob": "**/*.d.ts",
-                "output": "./src"
-              },
-              {
-                "input": "./packages/my-plugin",
-                "glob": "generators.json",
-                "output": "."
-              },
-              {
-                "input": "./packages/my-plugin",
-                "glob": "executors.json",
-                "output": "."
-              }
-            ]
-          }
-        }
-      }
-    },
-    "my-plugin-e2e": {
-      "root": "e2e/my-plugin-e2e",
-      "projectType": "application",
-      "sourceRoot": "e2e/my-plugin-e2e/src",
-      "targets": {
-        "e2e": {
-          "executor": "@nrwl/nx-plugin:e2e",
-          "options": {
-            "target": "my-plugin:build",
-            "jestConfig": "e2e/my-plugin-e2e/jest.config.js"
-          }
-        }
-      }
-    },
-    "single-spa": {
-      "root": "packages/single-spa",
-      "sourceRoot": "packages/single-spa/src",
+    "nx-single-spa": {
+      "root": "packages/nx-single-spa",
+      "sourceRoot": "packages/nx-single-spa/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/single-spa/**/*.ts"]
+            "lintFilePatterns": ["packages/nx-single-spa/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/packages/single-spa"],
+          "outputs": ["coverage/packages/nx-single-spa"],
           "options": {
-            "jestConfig": "packages/single-spa/jest.config.js",
+            "jestConfig": "packages/nx-single-spa/jest.config.js",
             "passWithNoTests": true
           }
         },
@@ -92,29 +24,29 @@
           "executor": "@nrwl/node:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/packages/single-spa",
-            "tsConfig": "packages/single-spa/tsconfig.lib.json",
-            "packageJson": "packages/single-spa/package.json",
-            "main": "packages/single-spa/src/index.ts",
+            "outputPath": "dist/packages/nx-single-spa",
+            "tsConfig": "packages/nx-single-spa/tsconfig.lib.json",
+            "packageJson": "packages/nx-single-spa/package.json",
+            "main": "packages/nx-single-spa/src/index.ts",
             "assets": [
-              "packages/single-spa/*.md",
+              "packages/nx-single-spa/*.md",
               {
-                "input": "./packages/single-spa/src",
+                "input": "./packages/nx-single-spa/src",
                 "glob": "**/!(*.ts)",
                 "output": "./src"
               },
               {
-                "input": "./packages/single-spa/src",
+                "input": "./packages/nx-single-spa/src",
                 "glob": "**/*.d.ts",
                 "output": "./src"
               },
               {
-                "input": "./packages/single-spa",
+                "input": "./packages/nx-single-spa",
                 "glob": "generators.json",
                 "output": "."
               },
               {
-                "input": "./packages/single-spa",
+                "input": "./packages/nx-single-spa",
                 "glob": "executors.json",
                 "output": "."
               }
@@ -123,16 +55,16 @@
         }
       }
     },
-    "single-spa-e2e": {
-      "root": "e2e/single-spa-e2e",
+    "nx-single-spa-e2e": {
+      "root": "e2e/nx-single-spa-e2e",
       "projectType": "application",
-      "sourceRoot": "e2e/single-spa-e2e/src",
+      "sourceRoot": "e2e/nx-single-spa-e2e/src",
       "targets": {
         "e2e": {
           "executor": "@nrwl/nx-plugin:e2e",
           "options": {
-            "target": "single-spa:build",
-            "jestConfig": "e2e/single-spa-e2e/jest.config.js"
+            "target": "nx-single-spa:build",
+            "jestConfig": "e2e/nx-single-spa-e2e/jest.config.js"
           }
         }
       }

@@ -1,5 +1,5 @@
 {
-  "npmScope": "my-plugin",
+  "npmScope": "mcollis",
   "affected": {
     "defaultBase": "main"
   },
@@ -27,19 +27,12 @@
     ]
   },
   "projects": {
-    "my-plugin": {
+    "nx-single-spa": {
       "tags": []
     },
-    "my-plugin-e2e": {
+    "nx-single-spa-e2e": {
       "tags": [],
-      "implicitDependencies": ["my-plugin"]
-    },
-    "single-spa": {
-      "tags": []
-    },
-    "single-spa-e2e": {
-      "tags": [],
-      "implicitDependencies": ["single-spa"]
+      "implicitDependencies": ["nx-single-spa"]
     }
   },
   "workspaceLayout": {
