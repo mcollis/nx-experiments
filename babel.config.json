@@ -1,5 +1,8 @@
 {
-  "presets": [["@nrwl/web/babel", { "useBuiltIns": "usage" }]],
+  "presets": [
+    ["@nrwl/web/babel", { "useBuiltIns": "usage" }],
+    ["@nrwl/react/babel", { "runtime": "automatic" }]
+  ],
   "plugins": [
     ["@babel/plugin-proposal-pipeline-operator", { "proposal": "minimal" }]
   ]

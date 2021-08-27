@@ -3,6 +3,7 @@ import {
   formatFiles,
   generateFiles,
   getProjects,
+  getWorkspaceLayout,
   joinPathFragments,
   names,
   offsetFromRoot,
@@ -26,6 +27,7 @@ async function normalizeOptions(
   tree: Tree,
   options: ApplicationGeneratorSchema
 ): Promise<NormalizedSchema> {
+  const { npmScope } = getWorkspaceLayout(tree);
   const project = getProjects(tree).get(options.project);
   const { root, sourceRoot, projectType } = project;
 
@@ -33,7 +35,7 @@ async function normalizeOptions(
 
   return {
     ...options,
-    organization: names(options.organization).fileName,
+    organization: names(options.organization || npmScope).fileName,
     root,
     sourceRoot,
     projectType,
@@ -60,6 +62,7 @@ async function addDeps(tree: Tree) {
     tree,
     { 'single-spa-react': 'latest' },
     {
+      'url-loader': '^3.0.0',
       'webpack-merge': 'latest',
       'webpack-config-single-spa-react-ts': 'latest',
     }
@@ -93,16 +96,22 @@ function updateProjConfig(tree: Tree, options: NormalizedSchema) {
     ...targets,
     build: {
       executor: '@my-plugin/single-spa:build',
+      outputs: ['{options.outputPath}'],
       options: {
-        root: options.root,
+        // root: options.root,
         project: options.project,
         organization: options.organization,
         filename: joinPathFragments(
           options.root,
           `src/${options.organization}-${options.project}`
         ),
+        outputPath: joinPathFragments('dist', options.root),
         webpackConfig: joinPathFragments(options.root, 'webpack.config.ts'),
       },
+    },
+    serve: {
+      ...targets.serve,
+      executor: '@my-plugin/single-spa:serve',
     },
   }))(getProjects(tree).get(options.project));
   updateProjectConfiguration(tree, options.project, project);

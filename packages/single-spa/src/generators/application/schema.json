@@ -17,8 +17,12 @@
     "organization": {
       "type": "string",
       "description": "The name of the organization.",
-      "alias": "org",
-      "x-prompt": "What is the name of the organization for this application?"
+      "pattern": "^[a-zA-Z0-9-_].*$",
+      "alias": "org"
+    },
+    "outputPath": {
+      "type": "string",
+      "description": "The output path of the generated files."
     },
     "tags": {
       "type": "string",
@@ -31,5 +35,5 @@
       "alias": "d"
     }
   },
-  "required": ["project", "organization"]
+  "required": ["project"]
 }

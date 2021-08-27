@@ -20,11 +20,6 @@
     "filename": {
       "type": "string",
       "description": "Path to entry point of application"
-    },
-    "root": {
-      "type": "string",
-      "description": "Path to a project root",
-      "hidden": true
     }
   },
   "required": ["project", "organization"]

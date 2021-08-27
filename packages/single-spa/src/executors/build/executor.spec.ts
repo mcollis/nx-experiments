@@ -4,9 +4,10 @@ import executor from './executor';
 const options: BuildExecutorSchema = {
   project: 'my-project',
   organization: 'my-org',
-  filename: 'mocks/src/my-org-my-project',
+  outputPath: 'dist/apps/my-project',
+  filename: 'mocks/my-org-my-project',
   webpackConfig: 'mocks/webpack.config.js',
-  root: 'packages/single-spa/src/executors/build',
+  // root: 'packages/single-spa/src/executors/build',
 };
 
 const context = {
