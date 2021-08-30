@@ -1,24 +1,44 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const R = require('ramda');
+const { join } = require('path');
 const { merge } = require('webpack-merge');
 const singleSpaDefaults = require('webpack-config-single-spa-react-ts');
 
-module.exports = (webpackConfigEnv, { options, ...argv }) => {
+const updateImageTest = R.evolve({
+  test: R.always(/\.(bmp|png|jpg|jpeg|gif|webp)$/i),
+});
+const removeUseOptions = R.evolve({
+  use: R.map(R.omit(['options'])),
+});
+const fixReactConfig = R.over(
+  R.lensPath(['module', 'rules']),
+  R.compose(
+    R.over(R.lensIndex(1), removeUseOptions),
+    R.over(R.lensIndex(2), updateImageTest)
+  )
+);
+
+module.exports = ({
+  orgName,
+  projectName,
+  entry,
+  appRoot,
+  webpackConfigEnv,
+  argv,
+}) => {
   const defaultConfig = singleSpaDefaults({
-    orgName: options.organization,
-    projectName: options.project,
+    orgName,
+    projectName,
     webpackConfigEnv,
     argv,
   });
 
-  defaultConfig.module.rules[2].test = /\.(bmp|png|jpg|jpeg|gif|webp)$/i;
+  const modifiedConfig = fixReactConfig(defaultConfig);
 
-  // remove the options from css-loader
-  delete defaultConfig.module.rules[1].use[1].options;
-
-  return merge(defaultConfig, {
-    entry: options.filename,
+  return merge(modifiedConfig, {
+    entry,
     output: {
-      path: options.outputPath,
+      path: join(defaultConfig.output.path, appRoot),
     },
     devServer: {
       onListening: function (devServer) {

@@ -7,12 +7,13 @@ import {
   joinPathFragments,
   names,
   offsetFromRoot,
+  toJS,
   Tree,
   updateProjectConfiguration,
   writeJson,
-  writeJsonFile,
 } from '@nrwl/devkit';
 import { runTasksInSerial } from '@nrwl/workspace/src/utilities/run-tasks-in-serial';
+import migrateWebpack from '@nrwl/web/src/generators/migrate-to-webpack-5/migrate-to-webpack-5';
 import * as path from 'path';
 import * as R from 'ramda';
 import { ApplicationGeneratorSchema } from './schema';
@@ -63,6 +64,7 @@ async function addDeps(tree: Tree) {
     { 'single-spa-react': 'latest' },
     {
       'url-loader': '^3.0.0',
+      'webpack-cli': 'latest',
       'webpack-merge': 'latest',
       'webpack-config-single-spa-react-ts': 'latest',
     }
@@ -76,6 +78,10 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
     ...options,
     offsetFromRoot: offsetFromRoot(options.sourceRoot),
     template: '',
+    project: options.project,
+    organization: options.organization,
+    entry: joinPathFragments(`src/${options.organization}-${options.project}`),
+    appRoot: options.root,
   };
   generateFiles(
     tree,
@@ -89,35 +95,51 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
     include: [],
     references: [],
   });
+  if (options.js) {
+    toJS(tree);
+  }
 }
 
 function updateProjConfig(tree: Tree, options: NormalizedSchema) {
   const project = R.over(R.lensProp('targets'), (targets) => ({
     ...targets,
     build: {
-      executor: '@mcollis/nx-single-spa:build',
-      outputs: ['{options.outputPath}'],
+      executor: '@nrwl/workspace:run-commands',
       options: {
-        // root: options.root,
-        project: options.project,
-        organization: options.organization,
-        filename: joinPathFragments(
+        command: 'webpack',
+        color: true,
+        config: joinPathFragments(
           options.root,
-          `src/${options.organization}-${options.project}`
+          `webpack.config.${options.js ? 'js' : 'ts'}`
         ),
-        outputPath: joinPathFragments('dist', options.root),
-        webpackConfig: joinPathFragments(options.root, 'webpack.config.ts'),
-        standalone: false,
       },
       configurations: {
-        standalone: {
-          standalone: true,
+        production: {
+          mode: 'production',
+        },
+        analyze: {
+          env: 'analyze',
         },
       },
     },
     serve: {
-      ...targets.serve,
-      executor: '@mcollis/nx-single-spa:serve',
+      executor: '@nrwl/workspace:run-commands',
+      options: {
+        command: 'webpack serve',
+        color: true,
+        config: joinPathFragments(
+          options.root,
+          `webpack.config.${options.js ? 'js' : 'ts'}`
+        ),
+      },
+      configurations: {
+        production: {
+          mode: 'production',
+        },
+        standalone: {
+          env: 'standalone',
+        },
+      },
     },
   }))(getProjects(tree).get(options.project));
   updateProjectConfiguration(tree, options.project, project);
@@ -127,10 +149,11 @@ export default async function (
   tree: Tree,
   options: ApplicationGeneratorSchema
 ) {
+  const migrateWebpackTasks = await migrateWebpack(tree, {});
   const normalizedOptions = await normalizeOptions(tree, options);
   updateProjConfig(tree, normalizedOptions);
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
   const depTask = await addDeps(tree);
-  return runTasksInSerial(depTask);
+  return runTasksInSerial(migrateWebpackTasks, depTask);
 }

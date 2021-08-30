@@ -24,6 +24,11 @@
       "type": "string",
       "description": "The output path of the generated files."
     },
+    "js": {
+      "type": "boolean",
+      "description": "Generate JavaScript files rather than TypeScript files.",
+      "default": false
+    },
     "tags": {
       "type": "string",
       "description": "Add tags to the project (used for linting)",
