@@ -12,10 +12,12 @@ const runWebpack = promisify(webpack);
 
 export default async function runExecutor(
   options: BuildExecutorSchema,
-  { root }: ExecutorContext
+  context: ExecutorContext
 ) {
-  const normalizedOptions = normalizeWebBuildOptions(root, options);
-  const config = buildWebpackConfig(normalizedOptions);
+  console.log(context.configurationName);
+  console.log(options);
+  const normalizedOptions = normalizeWebBuildOptions(context.root, options);
+  const config = buildWebpackConfig(normalizedOptions, context);
 
   return runWebpack(config).then((stats) => ({
     success: !stats.hasErrors(),

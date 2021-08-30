@@ -20,6 +20,10 @@
     "filename": {
       "type": "string",
       "description": "Path to entry point of application"
+    },
+    "standalone": {
+      "type": "boolean",
+      "description": "Generate a standalone output"
     }
   },
   "required": ["project", "organization"]

@@ -7,6 +7,7 @@ const options: BuildExecutorSchema = {
   outputPath: 'dist/apps/my-project',
   filename: 'mocks/my-org-my-project',
   webpackConfig: 'mocks/webpack.config.js',
+  standalone: false,
 };
 
 const context = {

@@ -37,7 +37,7 @@ export default async function* runExecutor(
     context.root,
     buildOptions
   );
-  const config = buildWebpackConfig(normalizedOptions);
+  const config = buildWebpackConfig(normalizedOptions, context);
 
   console.log('Executor ran for Serve', options);
 

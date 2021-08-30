@@ -107,6 +107,12 @@ function updateProjConfig(tree: Tree, options: NormalizedSchema) {
         ),
         outputPath: joinPathFragments('dist', options.root),
         webpackConfig: joinPathFragments(options.root, 'webpack.config.ts'),
+        standalone: false,
+      },
+      configurations: {
+        standalone: {
+          standalone: true,
+        },
       },
     },
     serve: {

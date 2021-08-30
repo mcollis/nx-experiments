@@ -4,4 +4,5 @@ export interface BuildExecutorSchema {
   webpackConfig: string;
   outputPath: string;
   filename: string;
+  standalone: boolean;
 } // eslint-disable-line
