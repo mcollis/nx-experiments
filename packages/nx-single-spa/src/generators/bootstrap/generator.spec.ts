@@ -3,11 +3,11 @@ import { Tree, readProjectConfiguration, readJson } from '@nrwl/devkit';
 import { createApp } from '@nrwl/react/src/utils/testing-generators';
 
 import generator from './generator';
-import { ApplicationGeneratorSchema } from './schema';
+import { BootstrapGeneratorSchema } from './schema';
 
-describe('application generator', () => {
+describe('bootstrap generator', () => {
   let appTree: Tree;
-  const options: ApplicationGeneratorSchema = {
+  const options: BootstrapGeneratorSchema = {
     project: 'my-app',
     organization: 'my-org',
   };

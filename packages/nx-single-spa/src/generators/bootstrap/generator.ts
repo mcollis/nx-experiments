@@ -16,9 +16,9 @@ import { runTasksInSerial } from '@nrwl/workspace/src/utilities/run-tasks-in-ser
 import migrateWebpack from '@nrwl/web/src/generators/migrate-to-webpack-5/migrate-to-webpack-5';
 import * as path from 'path';
 import * as R from 'ramda';
-import { ApplicationGeneratorSchema } from './schema';
+import { BootstrapGeneratorSchema } from './schema';
 
-interface NormalizedSchema extends ApplicationGeneratorSchema {
+interface NormalizedSchema extends BootstrapGeneratorSchema {
   root: string;
   sourceRoot: string;
   projectType: string;
@@ -26,7 +26,7 @@ interface NormalizedSchema extends ApplicationGeneratorSchema {
 
 async function normalizeOptions(
   tree: Tree,
-  options: ApplicationGeneratorSchema
+  options: BootstrapGeneratorSchema
 ): Promise<NormalizedSchema> {
   const { npmScope } = getWorkspaceLayout(tree);
   const project = getProjects(tree).get(options.project);
@@ -44,7 +44,7 @@ async function normalizeOptions(
   };
 }
 
-async function getDirectory(host: Tree, options: ApplicationGeneratorSchema) {
+async function getDirectory(host: Tree, options: BootstrapGeneratorSchema) {
   const workspace = getProjects(host);
   let baseDir: string;
   if (options.directory) {
@@ -145,10 +145,7 @@ function updateProjConfig(tree: Tree, options: NormalizedSchema) {
   updateProjectConfiguration(tree, options.project, project);
 }
 
-export default async function (
-  tree: Tree,
-  options: ApplicationGeneratorSchema
-) {
+export default async function (tree: Tree, options: BootstrapGeneratorSchema) {
   const migrateWebpackTasks = await migrateWebpack(tree, {});
   const normalizedOptions = await normalizeOptions(tree, options);
   updateProjConfig(tree, normalizedOptions);

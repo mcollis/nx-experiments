@@ -18,7 +18,7 @@ describe('nx-single-spa e2e', () => {
 
   fit('should create nx-single-spa', async () => {
     await runNxCommandAsync(
-      `generate @mcollis/nx-single-spa:application --project=${plugin} --js=true`
+      `generate @mcollis/nx-single-spa:bootstrap --project=${plugin} --js=true`
     );
 
     // const result = await runNxCommandAsync(`build ${plugin}`);
