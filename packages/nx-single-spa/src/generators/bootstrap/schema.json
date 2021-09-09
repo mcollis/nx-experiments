@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "$id": "Application",
+  "$id": "Bootstrap",
   "title": "",
   "type": "object",
   "properties": {
@@ -23,6 +23,11 @@
     "outputPath": {
       "type": "string",
       "description": "The output path of the generated files."
+    },
+    "js": {
+      "type": "boolean",
+      "description": "Generate JavaScript files rather than TypeScript files.",
+      "default": false
     },
     "tags": {
       "type": "string",
