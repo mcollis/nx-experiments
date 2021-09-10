@@ -1,7 +1,6 @@
 import { InitGeneratorSchema } from '../init/schema';
-
-export interface BootstrapGeneratorSchema extends InitGeneratorSchema {
-  projectName: string;
+export interface ApplicationGeneratorSchema extends InitGeneratorSchema {
+  name: string;
   organization?: string;
   outputPath?: string;
   js?: boolean;

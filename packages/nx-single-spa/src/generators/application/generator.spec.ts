@@ -1,20 +1,19 @@
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
-import { Tree, readProjectConfiguration, readJson } from '@nrwl/devkit';
-import { createApp } from '@nrwl/react/src/utils/testing-generators';
+import { Tree, readProjectConfiguration, names, readJson } from '@nrwl/devkit';
 
 import generator from './generator';
-import { BootstrapGeneratorSchema } from './schema';
+import { ApplicationGeneratorSchema } from './schema';
 
-describe('bootstrap generator', () => {
+describe('application generator', () => {
   let appTree: Tree;
-  const options: BootstrapGeneratorSchema = {
-    projectName: 'my-app',
+  const options: ApplicationGeneratorSchema = {
+    name: 'my-app',
     organization: 'my-org',
   };
+  const projectName = names(options.name).fileName;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     appTree = createTreeWithEmptyWorkspace();
-    await createApp(appTree, 'my-app', false);
   });
 
   it('should run successfully', async () => {
@@ -26,9 +25,11 @@ describe('bootstrap generator', () => {
     await generator(appTree, options);
     expect(appTree.exists('tsconfig.json')).toBeTruthy();
     expect(appTree.exists('apps/my-app/webpack.config.ts')).toBeTruthy();
+    expect(appTree.exists('apps/my-app/.babelrc')).toBeTruthy();
+    expect(appTree.exists('apps/my-app/tsconfig.json')).toBeTruthy();
     expect(
       appTree.exists(
-        `apps/my-app/src/${options.organization}-${options.projectName}.tsx`
+        `apps/my-app/src/${options.organization}-${projectName}.tsx`
       )
     ).toBeTruthy();
     expect(appTree.exists(`apps/my-app/src/root.component.tsx`)).toBeTruthy();
@@ -39,7 +40,7 @@ describe('bootstrap generator', () => {
     expect(appTree.exists('apps/my-app/webpack.config.js')).toBeTruthy();
     expect(
       appTree.exists(
-        `apps/my-app/src/${options.organization}-${options.projectName}.js`
+        `apps/my-app/src/${options.organization}-${projectName}.js`
       )
     ).toBeTruthy();
     expect(appTree.exists(`apps/my-app/src/root.component.js`)).toBeTruthy();

@@ -11,43 +11,66 @@ describe('nx-single-spa e2e', () => {
   beforeEach(async () => {
     plugin = uniq('nx-single-spa');
     ensureNxProject('@mcollis/nx-single-spa', 'dist/packages/nx-single-spa');
-    await runNxCommandAsync(
-      `generate @nrwl/react:application ${plugin} --js=true`
-    );
   }, 300000);
 
-  fit('should create nx-single-spa', async () => {
-    await runNxCommandAsync(
-      `generate @mcollis/nx-single-spa:bootstrap --project=${plugin} --js=true`
-    );
-
-    // const result = await runNxCommandAsync(`build ${plugin}`);
-    expect(true).toBeTruthy();
-    // expect(result.stdout).toContain('Executor ran');
-  }, 300000);
-
-  describe('--directory', () => {
-    it('should create src in the specified directory', async () => {
-      const plugin = uniq('nx-single-spa');
-      ensureNxProject('@mcollis/nx-single-spa', 'dist/packages/nx-single-spa');
+  describe('application generator', () => {
+    fit('should create nx-single-spa', async () => {
       await runNxCommandAsync(
-        `generate @mcollis/nx-single-spa:nx-single-spa ${plugin} --directory subdir`
+        `generate @mcollis/nx-single-spa:application ${plugin}`
       );
-      expect(() =>
-        checkFilesExist(`libs/subdir/${plugin}/src/index.ts`)
-      ).not.toThrow();
-    }, 120000);
+
+      // const result = await runNxCommandAsync(`build ${plugin}`);
+      expect(true).toBeTruthy();
+      // expect(result.stdout).toContain('Executor ran');
+    }, 300000);
   });
 
-  describe('--tags', () => {
-    it('should add tags to nx.json', async () => {
-      const plugin = uniq('nx-single-spa');
-      ensureNxProject('@mcollis/nx-single-spa', 'dist/packages/nx-single-spa');
+  describe('bootstrap generator', () => {
+    beforeEach(async () => {
       await runNxCommandAsync(
-        `generate @mcollis/nx-single-spa:nx-single-spa ${plugin} --tags e2etag,e2ePackage`
+        `generate @nrwl/react:application ${plugin} --js=true`
       );
-      const nxJson = readJson('nx.json');
-      expect(nxJson.projects[plugin].tags).toEqual(['e2etag', 'e2ePackage']);
-    }, 120000);
+    }, 300000);
+
+    it('should create nx-single-spa', async () => {
+      await runNxCommandAsync(
+        `generate @mcollis/nx-single-spa:bootstrap --projectName=${plugin}`
+      );
+
+      // const result = await runNxCommandAsync(`build ${plugin}`);
+      expect(true).toBeTruthy();
+      // expect(result.stdout).toContain('Executor ran');
+    }, 300000);
+
+    describe('--directory', () => {
+      it('should create src in the specified directory', async () => {
+        const plugin = uniq('nx-single-spa');
+        ensureNxProject(
+          '@mcollis/nx-single-spa',
+          'dist/packages/nx-single-spa'
+        );
+        await runNxCommandAsync(
+          `generate @mcollis/nx-single-spa:nx-single-spa ${plugin} --directory subdir`
+        );
+        expect(() =>
+          checkFilesExist(`libs/subdir/${plugin}/src/index.ts`)
+        ).not.toThrow();
+      }, 120000);
+    });
+
+    describe('--tags', () => {
+      it('should add tags to nx.json', async () => {
+        const plugin = uniq('nx-single-spa');
+        ensureNxProject(
+          '@mcollis/nx-single-spa',
+          'dist/packages/nx-single-spa'
+        );
+        await runNxCommandAsync(
+          `generate @mcollis/nx-single-spa:nx-single-spa ${plugin} --tags e2etag,e2ePackage`
+        );
+        const nxJson = readJson('nx.json');
+        expect(nxJson.projects[plugin].tags).toEqual(['e2etag', 'e2ePackage']);
+      }, 120000);
+    });
   });
 });

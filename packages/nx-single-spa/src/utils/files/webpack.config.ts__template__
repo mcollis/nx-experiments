@@ -6,7 +6,7 @@ const defaultSingleSpaConfig = require('@mcollis/nx-single-spa/src/plugins/webpa
 module.exports = (webpackConfigEnv, argv) => {
   const defaultConfig = defaultSingleSpaConfig({
     orgName: '<%= organization %>',
-    projectName: '<%= project %>',
+    projectName: '<%= projectName %>',
     entry: join(__dirname, '<%= entry %>'),
     appRoot: '<%= appRoot %>',
     webpackConfigEnv,

@@ -1,7 +1,7 @@
 import {
-  addDependenciesToPackageJson,
   formatFiles,
   generateFiles,
+  GeneratorCallback,
   getProjects,
   getWorkspaceLayout,
   joinPathFragments,
@@ -13,10 +13,10 @@ import {
   writeJson,
 } from '@nrwl/devkit';
 import { runTasksInSerial } from '@nrwl/workspace/src/utilities/run-tasks-in-serial';
-import migrateWebpack from '@nrwl/web/src/generators/migrate-to-webpack-5/migrate-to-webpack-5';
 import * as path from 'path';
 import * as R from 'ramda';
 import { BootstrapGeneratorSchema } from './schema';
+import singleSpaInitGenerator from '../init/generator';
 
 interface NormalizedSchema extends BootstrapGeneratorSchema {
   root: string;
@@ -29,7 +29,7 @@ async function normalizeOptions(
   options: BootstrapGeneratorSchema
 ): Promise<NormalizedSchema> {
   const { npmScope } = getWorkspaceLayout(tree);
-  const project = getProjects(tree).get(options.project);
+  const project = getProjects(tree).get(options.projectName);
   const { root, sourceRoot, projectType } = project;
 
   const directory = await getDirectory(tree, options);
@@ -51,26 +51,11 @@ async function getDirectory(host: Tree, options: BootstrapGeneratorSchema) {
     baseDir = options.directory;
   } else {
     baseDir =
-      workspace.get(options.project).projectType === 'application'
+      workspace.get(options.projectName).projectType === 'application'
         ? 'app'
         : 'lib';
   }
   return baseDir;
-}
-
-async function addDeps(tree: Tree) {
-  const installTask = await addDependenciesToPackageJson(
-    tree,
-    { 'single-spa-react': 'latest' },
-    {
-      'url-loader': '^3.0.0',
-      'webpack-cli': 'latest',
-      'webpack-merge': 'latest',
-      'webpack-config-single-spa-react-ts': 'latest',
-    }
-  );
-
-  return runTasksInSerial(installTask);
 }
 
 function addFiles(tree: Tree, options: NormalizedSchema) {
@@ -78,14 +63,14 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
     ...options,
     offsetFromRoot: offsetFromRoot(options.sourceRoot),
     template: '',
-    project: options.project,
-    organization: options.organization,
-    entry: joinPathFragments(`src/${options.organization}-${options.project}`),
+    entry: joinPathFragments(
+      `src/${options.organization}-${options.projectName}`
+    ),
     appRoot: options.root,
   };
   generateFiles(
     tree,
-    path.join(__dirname, 'files'),
+    path.join(__dirname, '../../utils/files'),
     options.root,
     templateOptions
   );
@@ -141,16 +126,20 @@ function updateProjConfig(tree: Tree, options: NormalizedSchema) {
         },
       },
     },
-  }))(getProjects(tree).get(options.project));
-  updateProjectConfiguration(tree, options.project, project);
+  }))(getProjects(tree).get(options.projectName));
+  updateProjectConfiguration(tree, options.projectName, project);
 }
 
 export default async function (tree: Tree, options: BootstrapGeneratorSchema) {
-  const migrateWebpackTasks = await migrateWebpack(tree, {});
   const normalizedOptions = await normalizeOptions(tree, options);
+  const tasks: GeneratorCallback[] = [];
+
+  const initTask = await singleSpaInitGenerator(tree, options);
+  tasks.push(initTask);
+
   updateProjConfig(tree, normalizedOptions);
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
-  const depTask = await addDeps(tree);
-  return runTasksInSerial(migrateWebpackTasks, depTask);
+
+  return runTasksInSerial(...tasks);
 }

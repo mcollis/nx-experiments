@@ -7,6 +7,16 @@
       "factory": "./src/generators/bootstrap/generator",
       "schema": "./src/generators/bootstrap/schema.json",
       "description": "bootstrap generator"
+    },
+    "application": {
+      "factory": "./src/generators/application/generator",
+      "schema": "./src/generators/application/schema.json",
+      "description": "application generator"
+    },
+    "init": {
+      "factory": "./src/generators/init/generator",
+      "schema": "./src/generators/init/schema.json",
+      "description": "init generator"
     }
   }
 }

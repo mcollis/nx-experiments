@@ -32,6 +32,16 @@
               "packages/nx-single-spa/*.md",
               {
                 "input": "./packages/nx-single-spa/src",
+                "glob": "**/files/**",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/nx-single-spa/src",
+                "glob": "**/files/**/.babelrc.json",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/nx-single-spa/src",
                 "glob": "**/!(*.ts)",
                 "output": "./src"
               },
